@@ -1,26 +1,49 @@
 import type Campaign from "../types/campaign.ts";
+import {MdModeEditOutline, MdDelete, MdCheck,} from "react-icons/md";
+import {FaXmark} from "react-icons/fa6";
+import {SquareButton} from "./buttons.tsx";
+import {useState} from "react";
+import {DeleteCampaignPopUp} from "./popUps.tsx";
 
-export default function campaignList({campaigns: campaigns}: { campaigns: Campaign[] }) {
+export default function campaignList({campaigns, onToggleStatus, onDelete}: {
+    campaigns: Campaign[],
+    onToggleStatus: (id: string) => void
+    onDelete: (id: string) => void
+}) {
 
-    return (<div>
+    const [isDeletePopUpOpen, setIsDeletePopUpOpen] = useState(false);
+
+    return (<div className={"flex flex-col gap-5"}>
         {campaigns.map((option: Campaign) => (
-            <article className="bg-gray-800 rounded-lg p-5 flex flex-col gap-5 text-white">
-                <div className="flex items-center justify-between">
-                    <div className="flex flex-col gap-1">
+            <article key={option.id}
+                     className={`rounded-lg p-5 flex flex-col duration-100 gap-5 ${option.status ? "bg-gray-800 text-white" : "bg-gray-900 text-gray-600"}`}>
+                <div className="flex items-center justify-between gap-5">
+                    <div className="flex flex-col gap-2">
                         <h3 className={"text-3xl font-bold"}>{option.name}</h3>
                         <p className={"text-md text-gray-400"}>{option.town && <>{option.town} • </>}{option.radius} km</p>
+                        <div className={"flex flex-row gap-3"}>
+                            <SquareButton handleClick={() => onToggleStatus(option.id)}>
+                                {option.status ? <MdCheck/> : <FaXmark/>}
+                            </SquareButton>
+                            <SquareButton>
+                                <MdModeEditOutline/>
+                            </SquareButton>
+                            <SquareButton handleClick={() => setIsDeletePopUpOpen(true)}>
+                                <MdDelete/>
+                            </SquareButton>
+                            <DeleteCampaignPopUp isOpen={isDeletePopUpOpen} campaignName={option.name} onDelete={() => {setIsDeletePopUpOpen(false);onDelete(option.id)}} onClose={() => setIsDeletePopUpOpen(false)} />
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col ml-auto gap-3">
                         <p className={"text-lg"}>Bid: <strong>{option.bidAmount}$</strong></p>
                         <p className={"text-lg"}>Fund: <strong>{option.campaignFund}$</strong></p>
                     </div>
                 </div>
                 <div className="flex flex-row flex-wrap gap-3">
-                    {option.keywords.map(keyword => (
-                        <div key={keyword} className={"bg-slate-900 rounded-lg py-1 px-2"}>{keyword}</div>
+                    {option.keywords.map((keyword, index) => (
+                        <div key={index} className={"bg-slate-900 rounded-lg py-1 px-2"}>{keyword}</div>
                     ))}
                 </div>
-
             </article>
         ))}
     </div>)
