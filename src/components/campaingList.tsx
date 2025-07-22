@@ -63,9 +63,9 @@ export default function campaignList({campaigns, onToggleStatus, onEdit, onDelet
             {editCampaignId && (
                 <EditCampaignPopUp
                     isOpen={true}
-                    campaign={campaigns.find(c => c.id === editCampaignId) || 'this campaign'}
-                    onDelete={() => {
-                        onDelete(editCampaignId);
+                    campaign={campaigns.find(c => c.id === editCampaignId)}
+                    onSave={(updatedCampaign: Campaign) => {
+                        onEdit(updatedCampaign);
                         setEditCampaignId(null);
                     }}
                     onClose={() => setEditCampaignId(null)}
