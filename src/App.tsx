@@ -18,6 +18,12 @@ function App() {
         ))
     }, [setCampaigns]);
 
+    const handleEdit = useCallback((editedCampaign: Campaign) => {
+        setCampaigns(campaigns => campaigns.map((campaign: Campaign) =>
+            campaign.id === editedCampaign.id ? editedCampaign : campaign
+        ))
+    }, [setCampaigns]);
+
     const handleDelete = useCallback((id: string) => {
         setCampaigns(campaigns => campaigns.filter(campaign => campaign.id !== id));
     }, []);
@@ -27,7 +33,7 @@ function App() {
             <header>
                <h1 className="text-red-400 text-5xl">Campaigns</h1>
             </header>
-            <CampaingList campaigns={campaigns} onToggleStatus={handleToggleStatus} onDelete={handleDelete} />
+            <CampaingList campaigns={campaigns} onToggleStatus={handleToggleStatus} onEdit={handleEdit} onDelete={handleDelete} />
         </div>
     )
 }
