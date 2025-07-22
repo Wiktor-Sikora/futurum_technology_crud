@@ -4,7 +4,7 @@ import {
     useState,
     useEffect,
     type FormEvent,
-    type MouseEvent
+    type MouseEvent, type ChangeEvent
 } from "react";
 import {SquareButton} from "./buttons.tsx";
 import type Campaign from "../types/campaign.ts"
@@ -102,15 +102,20 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
         e.preventDefault();
 
         if (!formState.name.trim()) {
-            setFormErrorMessage("Campaign name is not valid"); return
+            setFormErrorMessage("Campaign name is not valid");
+            return
         } else if (!formState.bidAmount || formState.bidAmount < 100) {
-            setFormErrorMessage("Bid Amount must be at least 100$"); return
+            setFormErrorMessage("Bid Amount must be at least 100$");
+            return
         } else if (!formState.campaignFund || formState.campaignFund <= 0) {
-            setFormErrorMessage("Campaign fund must be a positive number"); return
+            setFormErrorMessage("Campaign fund must be a positive number");
+            return
         } else if (!formState.radius || formState.radius <= 0) {
-            setFormErrorMessage("Campaign radius must be a positive number"); return
+            setFormErrorMessage("Campaign radius must be a positive number");
+            return
         } else if (formState.keywords.length == 0) {
-            setFormErrorMessage("At least one keyword is required"); return
+            setFormErrorMessage("At least one keyword is required");
+            return
         }
 
         const updatedCampaign: Campaign = {
@@ -129,7 +134,8 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
 
     return <PopUp isOpen={isOpen} onClose={onClose} title={<>Editing campaign <strong>{campaign.name}</strong></>}>
         <form onSubmit={handleSubmit} className={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"}>
-            <TextInput onChange={(event) => handleChange(event.target.value, "name")} name={"name"}
+            <TextInput onChange={(event: ChangeEvent<HTMLInputElement>) => handleChange(event.target.value, "name")}
+                       name={"name"}
                        label={"Campaign name"}
                        value={formState.name} placeholderValue={"dog hairdresser"} isRequired={true}/>
             <SelectInput name={"town"} label={"Campaign town"} value={formState.town} options={towns}
@@ -137,12 +143,13 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
                          isRequired={true}/>
             <NumberInput name={"radius"} label={"Campaign radius (km)"} value={formState.radius} isRequired={true}
                          onChange={(event) => handleChange(parseFloat(event.target.value), "radius")}/>
-            <NumberInput name={"bidAmount"} label={"Bid amount (min 100$)"} value={formState.bidAmount} isRequired={true}
+            <NumberInput name={"bidAmount"} label={"Bid amount (min 100$)"} value={formState.bidAmount}
+                         isRequired={true}
                          minValue={100}
-                         onChange={(event) => handleChange(parseFloat(event.target.value), "bidAmount")}/>
+                         onChange={(event: ChangeEvent<HTMLInputElement>) => handleChange(parseFloat(event.target.value), "bidAmount")}/>
             <NumberInput name={"campaignFund"} label={"Fund amount"} value={formState.campaignFund}
                          isRequired={true}
-                         onChange={(event) => handleChange(parseFloat(event.target.value), "campaignFund")}/>
+                         onChange={(event: ChangeEvent<HTMLInputElement>) => handleChange(parseFloat(event.target.value), "campaignFund")}/>
             <TagInput name={"keywords"} label={"Campaign Keywords"} currentTags={formState.keywords}
                       tagSuggestions={keywordsSuggestions} className={"col-span-full"}
                       onChange={(tags: string[]) => handleChange(tags, "keywords")}/>
@@ -150,7 +157,7 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
             {formErrorMessage && <p className={"text-red-600 col-span-full"}>{formErrorMessage}</p>}
 
             <div className={"flex flex-row col-span-full gap-5"}>
-                <SquareButton buttonType={"submit"} handleClick={(e: FormEvent) => handleSubmit(e)}>
+                <SquareButton buttonType={"submit"}>
                     <p>Save</p>
                 </SquareButton>
                 <SquareButton handleClick={onClose}>

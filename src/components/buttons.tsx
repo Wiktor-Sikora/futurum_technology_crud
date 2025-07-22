@@ -2,7 +2,7 @@ import {type ReactNode} from "react";
 
 export function SquareButton({children, handleClick, className, buttonType = "button"}: {
     children: ReactNode,
-    handleClick: () => void,
+    handleClick?: () => void,
     className?: string
     buttonType?: "button" | "submit" | "reset"
 }) {

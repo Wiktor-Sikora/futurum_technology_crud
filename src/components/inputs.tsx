@@ -7,7 +7,7 @@ export function TextInput({name, label, value, placeholderValue, onChange, isReq
     label: string,
     value: string,
     placeholderValue: string,
-    onChange?: (e: ChangeEvent) => void,
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void,
     isRequired?: boolean
 }) {
     return (
@@ -23,7 +23,7 @@ export function NumberInput({name, label, value, onChange, isRequired, minValue 
     name: string,
     label: string,
     value: number,
-    onChange?: (e: ChangeEvent) => void,
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void,
     isRequired?: boolean,
     minValue?: number,
     stepValue?: number,
