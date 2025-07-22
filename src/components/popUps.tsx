@@ -72,6 +72,8 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
         radius: campaign.radius
     });
 
+    const [formErrorMessage, setFormErrorMessage] = useState("")
+
     useEffect(() => {
         setFormState({
             id: campaign.id,
@@ -99,10 +101,16 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log(e.currentTarget.checkValidity())
-        if (!e.currentTarget.checkValidity()) {
-            e.currentTarget.reportValidity()
-            return;
+        if (!formState.name.trim()) {
+            setFormErrorMessage("Campaign name is not valid"); return
+        } else if (!formState.bidAmount || formState.bidAmount < 100) {
+            setFormErrorMessage("Bid Amount must be at least 100$"); return
+        } else if (!formState.campaignFund || formState.campaignFund <= 0) {
+            setFormErrorMessage("Campaign fund must be a positive number"); return
+        } else if (!formState.radius || formState.radius <= 0) {
+            setFormErrorMessage("Campaign radius must be a positive number"); return
+        } else if (formState.keywords.length == 0) {
+            setFormErrorMessage("At least one keyword is required"); return
         }
 
         const updatedCampaign: Campaign = {
@@ -139,7 +147,9 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
                       tagSuggestions={keywordsSuggestions} className={"col-span-full"}
                       onChange={(tags: string[]) => handleChange(tags, "keywords")}/>
 
-            <div className={"flex flex-row col-span-2 gap-5"}>
+            {formErrorMessage && <p className={"text-red-600 col-span-full"}>{formErrorMessage}</p>}
+
+            <div className={"flex flex-row col-span-full gap-5"}>
                 <SquareButton buttonType={"submit"} handleClick={(e: FormEvent) => handleSubmit(e)}>
                     <p>Save</p>
                 </SquareButton>
@@ -147,6 +157,8 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
                     <p>Cancel</p>
                 </SquareButton>
             </div>
+
+
         </form>
     </PopUp>;
 }
