@@ -4,7 +4,6 @@ import {
     useState,
     useEffect,
     type FormEvent,
-    type ChangeEvent,
     type MouseEvent
 } from "react";
 import {SquareButton} from "./buttons.tsx";
@@ -97,8 +96,14 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
         }));
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        console.log(e.currentTarget.checkValidity())
+        if (!e.currentTarget.checkValidity()) {
+            e.currentTarget.reportValidity()
+            return;
+        }
 
         const updatedCampaign: Campaign = {
             id: formState.id,
@@ -124,10 +129,10 @@ export function EditCampaignPopUp({isOpen, campaign, onSave, onClose}: {
                          isRequired={true}/>
             <NumberInput name={"radius"} label={"Campaign radius (km)"} value={formState.radius} isRequired={true}
                          onChange={(event) => handleChange(parseFloat(event.target.value), "radius")}/>
-            <NumberInput name={"bidAmount"} label={"Campaign Bid amount"} value={formState.bidAmount} isRequired={true}
+            <NumberInput name={"bidAmount"} label={"Bid amount (min 100$)"} value={formState.bidAmount} isRequired={true}
                          minValue={100}
                          onChange={(event) => handleChange(parseFloat(event.target.value), "bidAmount")}/>
-            <NumberInput name={"campaignFund"} label={"Campaign Fund amount"} value={formState.campaignFund}
+            <NumberInput name={"campaignFund"} label={"Fund amount"} value={formState.campaignFund}
                          isRequired={true}
                          onChange={(event) => handleChange(parseFloat(event.target.value), "campaignFund")}/>
             <TagInput name={"keywords"} label={"Campaign Keywords"} currentTags={formState.keywords}
